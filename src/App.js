@@ -4,6 +4,8 @@ import {getRepos, sortData, deleteRepo, selectRepo,deselectRepo} from './actions
 import {TiArrowSortedDown, TiArrowSortedUp, TiTrash} from 'react-icons/ti';
 import Modal from 'react-modal';
 import store from './store/';
+
+// Build table header array and set properties
 const headerData = [
   { id: 'name', sort:'asc',isSortable: true, numeric:false, label: 'Name' },
   { id: 'owner.login', sort:'asc',isSortable: true,numeric:false, label: 'Owner' },
@@ -15,6 +17,8 @@ const headerData = [
   { id: 'delete', sort:'asc',isSortable: false,numeric:false, label: 'Delete' },
   { id: 'view', sort:'asc',isSortable: false,numeric:false, label: 'View' },
 ];
+
+// Modal styles
 const customStyles = {
   content : {
     top                   : '50%',
@@ -30,17 +34,18 @@ class App extends Component {
 
   constructor() {
     super();
-
     this.state = {
       modalIsOpen: true
     };
 
+    // Initialize modal settings
     this.openModal = this.openModal.bind(this);
     this.afterOpenModal = this.afterOpenModal.bind(this);
     this.closeModal = this.closeModal.bind(this);
   }
 
   componentWillMount(){
+    // Get and load the Repos from the store
   this.props.getRepos()
   }
   openModal() {
@@ -55,11 +60,13 @@ class App extends Component {
     this.deselectRepo()
   }
  
+  // Sort Table data
   sortData(id,sort,numeric, isSortable){
     if(isSortable)
     this.switchSort(id, sort,numeric)
   }
 
+  // Switch table column icon
   sortLabel(sort,isSortable){
     if(isSortable)
    if(sort === 'desc'){
@@ -70,17 +77,21 @@ class App extends Component {
 
   }
 
+  // Delete repo action
   deleteRepo(index){
 this.props.deleteRepo(index);
   }
 
+  // Select and view sitem from Store
   selectRepo(index){
     this.props.selectRepo(index);
   }
+  // Deselect repo
   deselectRepo(){
     this.props.deselectRepo();
   }
 
+  // Switch column sort and sort store data
   switchSort(id, sort,numeric){
     let currentSort;
     headerData.forEach( (item) => {
@@ -98,7 +109,10 @@ this.props.deleteRepo(index);
   }
 
   render() {
+    // Destructure Repositories from store
     const {data} = this.props;
+
+    // Destructure Single repo from store
     const {repo} = this.props;
 
     return (
@@ -193,5 +207,6 @@ const mapStateToProps = state => ( {
   data: state.repos,
   repo: state.repo
 });
+const actions = {getRepos,sortData,deleteRepo,selectRepo,deselectRepo};
 
-export default connect(mapStateToProps, {getRepos,sortData,deleteRepo,selectRepo,deselectRepo})(App);
+export default connect(mapStateToProps, actions)(App);
